@@ -1,9 +1,9 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask.ext.restless import APIManager
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, Integer, Text
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pib.db'
 db = SQLAlchemy(app)
 
@@ -18,12 +18,12 @@ class Pin(db.Model):
 db.create_all()
 
 api_manager = APIManager(app, flask_sqlalchemy_db=db)
-api_manager.create_api(Pin, methods=['GET', 'POST', 'DELETE', 'PUTs'])
+api_manager.create_api(Pin, methods=['GET', 'POST', 'DELETE', 'PUT'])
 
 
 @app.route('/')
 def hello_world():
-    return 'hello world!'
+    return app.send_static_file('hello.html')
 
 
 app.debug = True
